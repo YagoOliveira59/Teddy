@@ -2621,6 +2621,7 @@ __metadata:
   resolution: "@teddy/types@workspace:packages/types"
   dependencies:
     "@nestjs/swagger": "npm:^11.2.0"
+    reflect-metadata: "npm:^0.2.2"
   languageName: unknown
   linkType: soft
 
