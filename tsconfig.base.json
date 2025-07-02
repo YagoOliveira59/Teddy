@@ -15,8 +15,10 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
+    "baseUrl": ".", // A base é a raiz do monorepo
     "paths": {
       "@teddy/types": ["packages/types/src"]
     }
-  }
+  },
+  "exclude": ["node_modules"]
 }
