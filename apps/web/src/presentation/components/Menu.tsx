@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { NavLink } from "react-router-dom"; // 1. Importe o NavLink
+import { NavLink } from "react-router-dom";
 
-// Seus ícones e logo
+
 import logo from "/teddy.png";
 import HomeIcon from "./ui/icons/HomeIcon";
 import ClientIcon from "./ui/icons/ClientIcon";
@@ -29,7 +29,6 @@ function Menu({ isOpen, onClose }: MenuProps) {
     };
   }, [onClose]);
 
-  // Classes base para os links, evitando repetição
   const baseLinkClasses =
     "w-full text-left py-3 px-4 flex items-center gap-4 transition-colors duration-200 rounded-md";
 
@@ -53,12 +52,11 @@ function Menu({ isOpen, onClose }: MenuProps) {
       </div>
 
       <nav className="flex flex-col items-start py-8 pl-4 space-y-2">
-        {/* 3. Use NavLink em vez de button */}
         <NavLink
-          to="/home" // Define o caminho da rota
-          onClick={onClose} // Fecha o menu ao clicar
+          to="/home"
+          onClick={onClose}
           className={(
-            { isActive }, // Estilo dinâmico
+            { isActive },
           ) =>
             `${baseLinkClasses} ${isActive ? "text-orange-500 bg-orange-50" : "text-gray-700 hover:bg-gray-100"}`
           }

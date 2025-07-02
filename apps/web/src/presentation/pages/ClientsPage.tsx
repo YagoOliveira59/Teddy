@@ -24,13 +24,6 @@ type ModalState =
   | { mode: "create" }
   | { mode: "edit"; client: Client };
 
-/* const MOCK_CLIENTS: Client[] = Array.from({ length: 35 }, (_, i) => ({
-  id: i + 1,
-  name: `Eduardo ${i + 1}`,
-  salary: 3500 + i * 50,
-  companyValue: 120000 + i * 1000,
-})); */
-
 function ClientsPage({
   createClient,
   getAllClients,
@@ -129,8 +122,6 @@ function ClientsPage({
     return <div className="p-8 text-center">Carregando clientes...</div>;
   }
 
-/*   const handleAdd = (id: string) => alert(`Adicionar cliente ID: ${id}`); */
-
   return (
     <div className="min-h-[700px] max-w-[1200px] mx-auto">
       {error && (
@@ -181,7 +172,6 @@ function ClientsPage({
         </button>
       </div>
 
-      {/* Paginação */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}

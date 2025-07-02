@@ -1,71 +1,61 @@
+version: '3.8' # Boa prática especificar a versão
+
 services:
-  # Serviço para a API Node.js
-  api:
-    container_name: teddy-api
-    # Configura o build para usar o Dockerfile da raiz e o estágio 'production-api'
-    build:
-      context: . # O contexto de build é a raiz do monorepo
-      dockerfile: Dockerfile # Aponta para o Dockerfile na raiz
-      target: production-api # Especifica o estágio final da API no Dockerfile
-    ports:
-      - "4000:4000" # Mapeia a porta 4000 do host para a porta 4000 do container (exposta no Dockerfile)
-    env_file: .env # Carrega variáveis de ambiente do arquivo .env
-    environment:
-      - NODE_ENV=production
-      # Certifique-se de que DATABASE_URL e outras variáveis sensíveis estão no seu .env
-      - DATABASE_URL=${DATABASE_URL}
-      # Adicione outras variáveis de ambiente específicas da API aqui
-    depends_on:
-      db:
-        condition: service_healthy # Garante que o banco de dados esteja saudável antes de iniciar a API
-    networks:
-      - minha-rede # Conecta a API à rede definida
-    restart: unless-stopped # Reinicia o container a menos que seja parado manualmente
-
-  # Serviço para o Frontend (aplicação web)
-  web-client:
-    container_name: teddy-web
-    # Configura o build para usar o Dockerfile da raiz e o estágio 'production-web'
-    build:
-      context: . # O contexto de build é a raiz do monorepo
-      dockerfile: Dockerfile # Aponta para o Dockerfile na raiz
-      target: production-web # Especifica o estágio final da aplicação web no Dockerfile
-    ports:
-      - "80:80" # Mapeia a porta 80 do host para a porta 80 do container (exposta no Dockerfile)
-      # Se você preferir uma porta diferente no host, como 8080, use: - "8080:80"
-    env_file: .env # Carrega variáveis de ambiente do arquivo .env (se o frontend precisar de alguma)
-    networks:
-      - minha-rede # Conecta o frontend à rede definida
-    restart: unless-stopped # Reinicia o container a menos que seja parado manualmente
-    # OPCIONAL: Se o seu frontend faz chamadas imediatas à API no carregamento,
-    # adicionar esta dependência pode melhorar a experiência de desenvolvimento.
-    # depends_on:
-    #   api:
-    #     condition: service_started # ou service_healthy se a API tiver healthcheck
-
-  # Serviço para o Banco de Dados PostgreSQL
+  # Serviço de Banco de Dados
   db:
     container_name: teddy-db
-    image: postgres:17-alpine # Imagem oficial do PostgreSQL
+    image: postgres:17-alpine
     ports:
-      - "5432:5432" # Mapeia a porta 5432 do host para a porta 5432 do container
+      - "5433:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data # Persiste os dados do banco de dados em um volume
-    env_file: .env # Carrega variáveis de ambiente para o banco de dados (POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD)
-    healthcheck: # Configura uma verificação de saúde para o banco de dados
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - ./.env # <--- Continua lendo o .env da raiz para as variáveis POSTGRES_*
+    healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - minha-rede # Conecta o banco de dados à rede definida
-    restart: unless-stopped # Reinicia o container a menos que seja parado manualmente
+      - minha-rede
+    restart: unless-stopped
 
-# Definição de redes para permitir a comunicação entre os serviços
+  # Serviço da API
+  api:
+    container_name: teddy-api
+    build:
+      context: . # <--- O contexto de build deve ser a pasta da sua API
+      dockerfile: Dockerfile
+      target: production-api
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./apps/api/.env # <--- AGORA aponta para o .env da API
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - minha-rede
+    restart: unless-stopped
+
+  # Serviço do Cliente Web
+  web-client:
+    container_name: teddy-web
+    build:
+      context: . # <--- O contexto de build deve ser a pasta do seu cliente web
+      dockerfile: Dockerfile
+      target: production-web
+    ports:
+      - "8080:80"
+    env_file:
+      - ./apps/web/.env # <--- AGORA aponta para o .env do cliente web
+    networks:
+      - minha-rede
+    restart: unless-stopped
+
 networks:
   minha-rede:
-    driver: bridge # Cria uma rede bridge para os containers
+    driver: bridge
 
-# Definição de volumes para persistência de dados
 volumes:
-  postgres-data: # Volume para os dados do PostgreSQL
+  postgres-data:

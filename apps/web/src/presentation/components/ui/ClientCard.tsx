@@ -13,7 +13,7 @@ const formatCurrency = (value: number) => {
 
 interface ClientCardProps {
   client: Client;
-  variant?: "default" | "selection"; // ✅ Nova prop para controlar a variante
+  variant?: "default" | "selection";
   onEdit?: (id: string) => void;
   onDelete?: (client: Client) => void;
 }
@@ -40,9 +40,6 @@ function ClientCard({
       className="w-[285px] h-[138] bg-white rounded-sm shadow-md p-4 flex flex-col justify-between text-sm text-gray-700 hover:shadow-xl transition-shadow duration-200"
       whileHover={{ scale: 1.05 }}
     >
-{/*       <div>
-        <h3 className="font-bold text-lg text-gray-900 mb-2">{client.name}</h3>
-      </div> */}
       <div>
         <h3 className="font-bold text-lg text-gray-900 mb-2">{client.name}</h3>
         <p>Salário: {formatCurrency(client.salary)}</p>

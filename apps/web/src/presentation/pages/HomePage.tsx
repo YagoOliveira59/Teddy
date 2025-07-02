@@ -43,7 +43,6 @@ export function HomePage({ getAllClients }: HomePageProps) {
         Aqui está um resumo da sua atividade.
       </p>
 
-      {/* Cards de Estatísticas */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
           <div>
@@ -65,7 +64,6 @@ export function HomePage({ getAllClients }: HomePageProps) {
         </div>
       </div>
 
-      {/* Cards de Ação Rápida */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link
           to="/clients"

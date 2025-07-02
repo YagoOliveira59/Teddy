@@ -53,7 +53,7 @@ export function SelectedClientsProvider({
 
   const addClient = useCallback(
     async (client: Client) => {
-      setSelectedClients((prev) => [...prev, client]); // Atualização otimista
+      setSelectedClients((prev) => [...prev, client]);
       try {
         await addClientToSelectionUseCase.execute(client.id);
       } catch (error) {

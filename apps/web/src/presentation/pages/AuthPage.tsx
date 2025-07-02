@@ -228,7 +228,6 @@ export function AuthPage({ loginUseCase, registerUseCase }: AuthPageProps) {
                 Acessar sua conta
               </h1>
               <form onSubmit={handleLoginSubmit} className="space-y-4">
-                {/* Campos de input (email, password) */}
                 <input
                   type="email"
                   name="email"

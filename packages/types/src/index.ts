@@ -3,7 +3,7 @@ import { IsString, IsInt, IsNotEmpty, MinLength, IsEmail } from "class-validator
 import * as z from "zod/v4";
 
 
-// Client Schema Definitions
+
 export const clientSchema = z.object({
   id: z.uuid(),
   name: z
@@ -216,8 +216,5 @@ export class LoginDto {
 }
 
 export class LoginResponseDto {
-/*   @ApiProperty({
-    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-  }) */
   accessToken!: string;
 }
