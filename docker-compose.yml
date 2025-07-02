@@ -1,57 +1,71 @@
-# A diretiva 'version' foi removida, conforme as práticas mais recentes do Docker Compose
 services:
-  # Serviço da API (backend)
+  # Serviço para a API Node.js
   api:
-    container_name: api
+    container_name: teddy-api
+    # Configura o build para usar o Dockerfile da raiz e o estágio 'production-api'
     build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+      context: . # O contexto de build é a raiz do monorepo
+      dockerfile: Dockerfile # Aponta para o Dockerfile na raiz
+      target: production-api # Especifica o estágio final da API no Dockerfile
     ports:
-      - "3000:3000"
+      - "4000:4000" # Mapeia a porta 4000 do host para a porta 4000 do container (exposta no Dockerfile)
+    env_file: .env # Carrega variáveis de ambiente do arquivo .env
     environment:
-      - DATABASE_URL=postgresql://app_user:app_password@db:5432/meudb
+      - NODE_ENV=production
+      # Certifique-se de que DATABASE_URL e outras variáveis sensíveis estão no seu .env
+      - DATABASE_URL=${DATABASE_URL}
+      # Adicione outras variáveis de ambiente específicas da API aqui
     depends_on:
       db:
-        condition: service_healthy
+        condition: service_healthy # Garante que o banco de dados esteja saudável antes de iniciar a API
     networks:
-      - minha-rede
+      - minha-rede # Conecta a API à rede definida
+    restart: unless-stopped # Reinicia o container a menos que seja parado manualmente
 
-  # Serviço do Cliente Web (frontend)
+  # Serviço para o Frontend (aplicação web)
   web-client:
-    container_name: web
+    container_name: teddy-web
+    # Configura o build para usar o Dockerfile da raiz e o estágio 'production-web'
     build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+      context: . # O contexto de build é a raiz do monorepo
+      dockerfile: Dockerfile # Aponta para o Dockerfile na raiz
+      target: production-web # Especifica o estágio final da aplicação web no Dockerfile
     ports:
-      - "8080:80"
+      - "80:80" # Mapeia a porta 80 do host para a porta 80 do container (exposta no Dockerfile)
+      # Se você preferir uma porta diferente no host, como 8080, use: - "8080:80"
+    env_file: .env # Carrega variáveis de ambiente do arquivo .env (se o frontend precisar de alguma)
     networks:
-      - minha-rede
+      - minha-rede # Conecta o frontend à rede definida
+    restart: unless-stopped # Reinicia o container a menos que seja parado manualmente
+    # OPCIONAL: Se o seu frontend faz chamadas imediatas à API no carregamento,
+    # adicionar esta dependência pode melhorar a experiência de desenvolvimento.
+    # depends_on:
+    #   api:
+    #     condition: service_started # ou service_healthy se a API tiver healthcheck
 
-  # Serviço do Banco de Dados
+  # Serviço para o Banco de Dados PostgreSQL
   db:
-    container_name: db
-    # CORRIGIDO: Usando a versão estável mais recente do PostgreSQL
-    image: postgres:17-alpine
+    container_name: teddy-db
+    image: postgres:17-alpine # Imagem oficial do PostgreSQL
     ports:
-      - "5432:5432"
+      - "5432:5432" # Mapeia a porta 5432 do host para a porta 5432 do container
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    environment:
-      # Use um arquivo .env para estes valores em produção
-      - POSTGRES_USER=app_user
-      - POSTGRES_PASSWORD=app_password
-      - POSTGRES_DB=meudb
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app_user -d meudb"]
+      - postgres-data:/var/lib/postgresql/data # Persiste os dados do banco de dados em um volume
+    env_file: .env # Carrega variáveis de ambiente para o banco de dados (POSTGRES_USER, POSTGRES_DB, POSTGRES_PASSWORD)
+    healthcheck: # Configura uma verificação de saúde para o banco de dados
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - minha-rede
+      - minha-rede # Conecta o banco de dados à rede definida
+    restart: unless-stopped # Reinicia o container a menos que seja parado manualmente
 
+# Definição de redes para permitir a comunicação entre os serviços
 networks:
   minha-rede:
-    driver: bridge
+    driver: bridge # Cria uma rede bridge para os containers
 
+# Definição de volumes para persistência de dados
 volumes:
-  postgres-data:
+  postgres-data: # Volume para os dados do PostgreSQL

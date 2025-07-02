@@ -1,0 +1,35 @@
+# Pastas de build e temporárias
+dist/
+build/
+coverage/
+.eslintcache
+.temp/
+
+# Logs e arquivos de debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Variáveis de ambiente (dados sensíveis)
+.env
+.env.*
+
+# IDE e editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node.js padrão (o yarn install vai criar o que precisa)
+node_modules/
+
+# Exclua o arquivo de lock antigo se estiver usando Yarn Modern
+# package-lock.json
+
+# NUNCA EXCLUA A PASTA .YARN/ OU SEU CONTEÚDO!
+# Ela é vital para o Yarn PnP e o estado de instalação.
+# Evite linhas como:
+# /.yarn/
+# /.yarn/cache/
+# /.yarn/install-state.gz

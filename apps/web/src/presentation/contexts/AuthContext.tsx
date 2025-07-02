@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import type { User } from '../../domain/entities/user';
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   loading: boolean;

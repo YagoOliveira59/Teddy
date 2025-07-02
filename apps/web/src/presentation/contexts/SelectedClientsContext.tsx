@@ -1,7 +1,7 @@
 import { createContext } from "react";
 import type { Client } from "../../domain/entities/client";
 
-interface SelectedClientsContextType {
+export interface SelectedClientsContextType {
   selectedClients: Client[];
   loading: boolean;
   addClient: (client: Client) => Promise<void>;
