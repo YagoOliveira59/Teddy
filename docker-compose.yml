@@ -1,0 +1,57 @@
+# A diretiva 'version' foi removida, conforme as práticas mais recentes do Docker Compose
+services:
+  # Serviço da API (backend)
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://app_user:app_password@db:5432/meudb
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - minha-rede
+
+  # Serviço do Cliente Web (frontend)
+  web-client:
+    container_name: web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - minha-rede
+
+  # Serviço do Banco de Dados
+  db:
+    container_name: db
+    # CORRIGIDO: Usando a versão estável mais recente do PostgreSQL
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      # Use um arquivo .env para estes valores em produção
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=app_password
+      - POSTGRES_DB=meudb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app_user -d meudb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - minha-rede
+
+networks:
+  minha-rede:
+    driver: bridge
+
+volumes:
+  postgres-data:
