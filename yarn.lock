@@ -2619,6 +2619,8 @@ __metadata:
 "@teddy/types@workspace:*, @teddy/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@teddy/types@workspace:packages/types"
+  dependencies:
+    "@nestjs/swagger": "npm:^11.2.0"
   languageName: unknown
   linkType: soft
 
