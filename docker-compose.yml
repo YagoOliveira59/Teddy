@@ -22,7 +22,7 @@ services:
   api:
     container_name: teddy-api
     build:
-      context: . 
+      context: .
       dockerfile: Dockerfile
       target: production-api
     ports:
@@ -51,9 +51,75 @@ services:
       - minha-rede
     restart: unless-stopped
 
+  # --- SERVIÇOS ADICIONADOS ---
+
+  # Serviço do Redis
+  redis:
+    container_name: teddy-redis
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - minha-rede
+    restart: unless-stopped
+
+  # Serviço do Prometheus (Coleta de Métricas)
+  prometheus:
+    container_name: teddy-prometheus
+    image: prom/prometheus:v2.53.0 # Versão estável recente
+    ports:
+      - "9090:9090"
+    volumes:
+      # É necessário um arquivo de configuração para o Prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - minha-rede
+    restart: unless-stopped
+    depends_on:
+      - api
+
+  # Serviço do Grafana (Visualização de Métricas e Logs)
+  grafana:
+    container_name: teddy-grafana
+    image: grafana/grafana:11.0.0 # Versão estável recente
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - minha-rede
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # Serviço do Jaeger (Tracing Distribuído)
+  jaeger:
+    container_name: teddy-jaeger
+    image: jaegertracing/all-in-one:1.57 # Versão estável recente
+    ports:
+      - "6831:6831/udp" # Agent
+      - "16686:16686"    # UI
+      - "14268:14268"    # Collector (http)
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true # Habilita o protocolo OpenTelemetry
+    networks:
+      - minha-rede
+    restart: unless-stopped
+    depends_on:
+      - api
+
 networks:
   minha-rede:
     driver: bridge
 
 volumes:
   postgres-data:
+  redis-data: # Volume para persistir dados do Redis
+  grafana-data: # Volume para persistir dashboards e configurações do Grafana

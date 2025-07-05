@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponse } from '@teddy/types';
+import { NotFoundException } from '@nestjs/common';
 
 import { IUserRepository } from 'src/modules/users/domain/repositories/user.repository.interface';
 
@@ -21,7 +22,7 @@ export class LoginUseCase {
     const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
     const payload = {
       sub: user.id,

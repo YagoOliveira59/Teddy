@@ -1,5 +1,6 @@
+import { toast } from "sonner";
 import { motion } from "framer-motion";
-import { Plus, Pencil, Trash2, Minus } from "lucide-react";
+import { Plus, Pencil, Trash2, Minus, Check } from "lucide-react";
 import type { Client } from "../../../domain/entities/client";
 
 import { useSelectedClients } from "../../hooks/useSelectedClients";
@@ -30,8 +31,10 @@ function ClientCard({
   const handleToggleSelection = () => {
     if (selected) {
       removeClient(client.id);
+      toast.success(`${client.name} foi removido da seleção`);
     } else {
       addClient(client);
+      toast.success(`${client.name} foi adicionado à seleção`);
     }
   };
 
@@ -52,10 +55,17 @@ function ClientCard({
               onClick={handleToggleSelection}
               title={selected ? "Remover da seleção" : "Adicionar à seleção"}
             >
-              <Plus
-                size={20}
-                className={selected ? "text-orange-500" : "text-gray-500"}
-              />
+              {selected ? (
+                <Check
+                  size={20}
+                  className="text-green-500 hover:text-green-700"
+                />
+              ) : (
+                <Plus
+                  size={20}
+                  className="text-gray-500 hover:text-orange-500"
+                />
+              )}
             </button>
             <button
               onClick={() => onEdit?.(client.id)}

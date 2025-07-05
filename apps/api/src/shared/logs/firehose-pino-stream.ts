@@ -1,4 +1,5 @@
 import { Writable } from 'stream';
+import { PinoLogger } from 'nestjs-pino';
 import {
   FirehoseClient,
   PutRecordBatchCommand,
@@ -10,8 +11,9 @@ export class FirehosePinoStream extends Writable {
   private deliveryStreamName: string;
   private buffer: string[] = [];
   private bufferTimer: NodeJS.Timeout | null = null;
-  private readonly MAX_BATCH_SIZE = 500; // Limite de 500 registros por batch no Firehose
-  private readonly MAX_BUFFER_TIME_MS = 1000; // Tempo máximo para enviar um batch (1 segundo)
+  private readonly MAX_BATCH_SIZE = 500;
+  private readonly MAX_BUFFER_TIME_MS = 1000;
+  private readonly logger: PinoLogger;
 
   constructor(deliveryStreamName: string, awsRegion: string) {
     super({ objectMode: true });
@@ -20,7 +22,7 @@ export class FirehosePinoStream extends Writable {
 
     this.firehoseClient = new FirehoseClient({
       region: awsRegion,
-      credentials: defaultProvider(), // Usará as credenciais IAM da instância/role
+      credentials: defaultProvider(),
     });
 
     this.startBufferTimer();
@@ -62,15 +64,14 @@ export class FirehosePinoStream extends Writable {
           })),
         });
         await this.firehoseClient.send(command);
-        // console.log(`[FirehosePinoStream] ${batch.length} logs enviados para o Firehose.`);
       }
-    } catch (error) {
-      console.error(
-        '[FirehosePinoStream] Erro ao enviar logs para o Firehose:',
-        error,
+    } catch (error: unknown) {
+      this.logger.error(
+        { err: error instanceof Error ? error : { message: String(error) } },
+        '[FirehosePinoStream] Error while sending logs to Firehose:',
       );
     } finally {
-      this.startBufferTimer(); // Reinicia o timer
+      this.startBufferTimer();
     }
   }
 
@@ -96,9 +97,9 @@ export class FirehosePinoStream extends Writable {
       }
       callback();
     } catch (error) {
-      console.error(
-        '[FirehosePinoStream] Erro ao processar log do Pino:',
-        error,
+      this.logger.error(
+        { err: error instanceof Error ? error : { message: String(error) } },
+        '[FirehosePinoStream] Error processing Pino log:',
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       callback(error);

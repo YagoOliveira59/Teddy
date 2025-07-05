@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
+import { toast } from 'sonner';
 
 import ClientCard from "../components/ui/ClientCard";
 import Pagination from "../components/ui/Pagination";
@@ -87,15 +88,16 @@ function ClientsPage({
       try {
         if (modalState.mode === "create") {
           await createClient.execute(data);
-          alert("Cliente criado com sucesso!");
+          toast.success('Cliente criado com sucesso!');
         } else if (modalState.mode === "edit") {
           await updateClient.execute(modalState.client.id, data);
-          alert("Cliente atualizado com sucesso!");
+          toast.success('Cliente atualizado com sucesso!');
         }
         handleCloseModal();
         fetchClients();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
+        toast.error('Falha ao salvar cliente');
         setError(err?.response?.data?.message || err.message);
       }
     },
@@ -107,14 +109,14 @@ function ClientsPage({
       setError(null);
       try {
         await deleteClient.execute(clientToDelete.id);
-        alert("Cliente excluído com sucesso!");
+        toast.success('Cliente excluído com sucesso!');
         setClientToDelete(null);
         fetchClients();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         setError(err?.response?.data?.message || err.message);
         setClientToDelete(null);
-
+        toast.error('Falha ao excluir cliente');
       }
     }
   }, [clientToDelete, deleteClient, fetchClients]);

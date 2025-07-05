@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -142,6 +143,15 @@ export function AuthPage({ loginUseCase, registerUseCase }: AuthPageProps) {
               Próximo
             </button>
           </div>
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Possui uma conta?{" "}
+            <button
+              onClick={() => setView("login")}
+              className="font-semibold text-orange-500 hover:underline"
+            >
+              Entrar
+            </button>
+          </p>
         </motion.div>
       );
     }
@@ -186,14 +196,33 @@ export function AuthPage({ loginUseCase, registerUseCase }: AuthPageProps) {
               required
               className="w-full p-3 rounded-sm border-2 border-[#D9D9D9]"
             />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-orange-500 text-white font-bold py-3 rounded-sm"
-            >
-              {loading ? "Criando conta..." : "Criar conta"}
-            </button>
+            <div className="flex gap-4 py-3">
+              <button
+                type="button"
+                onClick={() => setRegisterStep(1)}
+                disabled={loading}
+                className="w-16 h-14 cursor-pointer bg-gray-200 text-gray-800 font-bold rounded-sm flex items-center justify-center hover:bg-gray-300 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full cursor-pointer bg-orange-500 text-white font-bold  rounded-sm"
+              >
+                {loading ? "Criando conta..." : "Criar conta"}
+              </button>
+            </div>
           </form>
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Possui uma conta?{" "}
+            <button
+              onClick={() => setView("login")}
+              className="font-semibold text-orange-500 hover:underline"
+            >
+              Entrar
+            </button>
+          </p>
         </motion.div>
       );
     }
@@ -221,7 +250,7 @@ export function AuthPage({ loginUseCase, registerUseCase }: AuthPageProps) {
               <img
                 src={logo}
                 alt="Logo Teddy"
-                width={100}
+                width={120}
                 className="mx-auto mb-8"
               />
               <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">

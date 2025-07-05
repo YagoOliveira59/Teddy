@@ -95,21 +95,14 @@ export class ClientsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Update a client (permission required)' })
   @ApiResponse({ status: 204, description: 'Client updated successfully.' })
-  @ApiResponse({
-    status: 403,
-    description:
-      'Forbidden. User does not have permission to update this client.',
-  })
   @ApiResponse({ status: 404, description: 'Client not found.' })
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateClientSchema))
     updateClientDto: UpdateClientDto,
-    @User() user: UserFromJwt,
   ) {
     await this.updateClientUseCase.execute({
       id,
-      userId: user.id,
       ...updateClientDto,
     });
   }
@@ -120,13 +113,8 @@ export class ClientsController {
     summary: 'Delete a client from the system (permission required)',
   })
   @ApiResponse({ status: 204, description: 'Client deleted successfully.' })
-  @ApiResponse({
-    status: 403,
-    description:
-      'Forbidden. User does not have permission to delete this client.',
-  })
   @ApiResponse({ status: 404, description: 'Client not found.' })
-  async remove(@Param('id') id: string, @User() user: UserFromJwt) {
-    await this.deleteClientUseCase.execute({ clientId: id, userId: user.id });
+  async remove(@Param('id') id: string) {
+    await this.deleteClientUseCase.execute({ clientId: id });
   }
 }

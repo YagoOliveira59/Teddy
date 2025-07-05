@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Toaster } from "sonner";
 import { Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -14,6 +15,8 @@ export function MainLayout() {
 
   return (
     <div className="flex min-h-screen w-full bg-gray-50">
+      <Toaster richColors position="top-right" />
+
       <AnimatePresence>
         {isMenuOpen && (
           <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />

@@ -1,6 +1,7 @@
-import { AppModule } from './app.module';
-import { NestFactory } from '@nestjs/core';
 import { Logger } from 'nestjs-pino';
+import { AppModule } from './app.module';
+import compression from 'compression';
+import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import helmet from 'helmet';
@@ -8,6 +9,7 @@ import helmet from 'helmet';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.use(helmet());
+  app.use(compression());
   app.useLogger(app.get(Logger));
 
   const config = new DocumentBuilder()

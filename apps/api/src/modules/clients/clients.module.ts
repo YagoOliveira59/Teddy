@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bullmq';
 
 import { ClientsController } from './presentation/controllers/clients.controller';
 
@@ -18,23 +19,38 @@ import { FindSelectedClientsByUserUseCase } from './application/use-cases/find-c
 import { AssociateClientToUserUseCase } from './application/use-cases/associate-client-to-user/associate-client-to-user.use-case';
 import { DisassociateClientFromUserUseCase } from './application/use-cases/disassociate-client-from-user/disassociate-client-from-user.use-case';
 
-import { UsersModule } from '../users/users.module';
+import { ClientProcessor } from './application/processors/client.processor';
+import { SendWelcomeEmailUseCase } from './application/use-cases/send-welcome-email/send-welcome-email.use-case';
+
+import { MailModule } from '@shared/mail/mail.module';
+import { LogsModule } from '@shared/logs/logs.module';
+/* import { MetricsModule } from '@shared/metrics/metrics.module'; */
+
+import { UsersModule } from '@modules/users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ClientSchema]),
     forwardRef(() => UsersModule),
+    BullModule.registerQueue({
+      name: 'client-tasks',
+    }),
+    forwardRef(() => LogsModule),
+    forwardRef(() => MailModule),
+    /*     forwardRef(() => MetricsModule), */
   ],
   controllers: [ClientsController],
   providers: [
     AssociateClientToUserUseCase,
     DisassociateClientFromUserUseCase,
+    ClientProcessor,
     CreateClientUseCase,
     DeleteClientUseCase,
     FindAllClientsUseCase,
     FindOneClientUseCase,
     FindSelectedClientsByUserUseCase,
     UpdateClientUseCase,
+    SendWelcomeEmailUseCase,
     ClientMapper,
     {
       provide: IClientRepository,

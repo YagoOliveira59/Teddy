@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/YagoOliveira59/Teddy#readme",
   "devDependencies": {
-    "@types/node": "^24.0.8"
+    "@types/node": "^24.0.8",
+    "ts-node": "^10.9.2"
   }
 }

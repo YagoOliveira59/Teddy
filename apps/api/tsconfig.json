@@ -12,7 +12,10 @@
     "outDir": "./dist",
     "baseUrl": ".", // Importante
     "paths": {
-      "@/*": ["src/*"] // Exemplo de alias local
+      "@/src/*": ["src/*"],
+      "@shared/*": ["src/shared/*"],
+      "@modules/*": ["src/modules/*"],
+        "@/*": ["src/*"]
     },
 /*     "baseUrl": ".", */
     "incremental": true,

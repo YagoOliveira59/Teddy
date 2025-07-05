@@ -1,15 +1,9 @@
-import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { UpdateClientDto } from '@teddy/types';
 import { IClientRepository } from '../../../domain/repositories/client.repository.interface';
 
 type UpdateClientInput = UpdateClientDto & {
   id: string;
-  userId: string;
 };
 
 @Injectable()
@@ -20,18 +14,11 @@ export class UpdateClientUseCase {
   ) {}
 
   async execute(input: UpdateClientInput): Promise<void> {
-    const { id, userId, name, salary, companyValue } = input;
+    const { id, name, salary, companyValue } = input;
 
     const client = await this.clientRepository.findById(id);
     if (!client) {
       throw new NotFoundException(`Client with ID "${id}" not found.`);
-    }
-
-    const isCreator = client.creatorId === userId;
-    if (!isCreator) {
-      throw new ForbiddenException(
-        'You do not have permission to update this client.',
-      );
     }
 
     if (name !== undefined) {

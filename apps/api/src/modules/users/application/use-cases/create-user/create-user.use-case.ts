@@ -1,5 +1,5 @@
 import { Injectable, Inject, ConflictException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 import { CreateUserDto } from '@teddy/types';
 import { IUserRepository } from '../../../domain/repositories/user.repository.interface';

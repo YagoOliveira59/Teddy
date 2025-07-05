@@ -1,4 +1,5 @@
 import { Writable } from 'stream';
+import { PinoLogger } from 'nestjs-pino';
 import { Client } from '@opensearch-project/opensearch';
 import { defaultProvider } from '@aws-sdk/credential-provider-node';
 import { AwsSigv4Signer } from '@opensearch-project/opensearch/aws';
@@ -8,9 +9,10 @@ export class OpenSearchPinoStream extends Writable {
   private indexName: string;
 
   constructor(
-    opensearchEndpoint: string, // Ex: https://seu-dominio-opensearch.us-east-1.es.amazonaws.com
-    region: string, // Ex: us-east-1
+    opensearchEndpoint: string, // https://seu-dominio-opensearch.us-east-1.es.amazonaws.com
+    region: string, // us-east-1
     indexName: string = 'nestjs-api-logs',
+    private readonly logger: PinoLogger,
   ) {
     super({ objectMode: true });
 
@@ -28,8 +30,10 @@ export class OpenSearchPinoStream extends Writable {
 
     this.client
       .info()
-      .then(() => console.log('Conectado ao OpenSearch para logs.'))
-      .catch((err) => console.error('Erro ao conectar ao OpenSearch:', err));
+      .then(() => this.logger.info('Connected to OpenSearch'))
+      .catch((err) =>
+        this.logger.error(`Error connecting to OpenSearch: ${err}`),
+      );
   }
 
   _write(
@@ -50,12 +54,22 @@ export class OpenSearchPinoStream extends Writable {
         })
         .then(() => callback())
         .catch((error) => {
-          console.error('Erro ao indexar log no OpenSearch:', error);
+          this.logger.error(
+            {
+              err: error instanceof Error ? error : { message: String(error) },
+            },
+            'Error indexing log in OpenSearch',
+          );
           // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           callback(error);
         });
     } catch (error) {
-      console.error('Erro ao processar log do Pino:', error);
+      this.logger.error(
+        {
+          err: error instanceof Error ? error : { message: String(error) },
+        },
+        'Error processing Pino log',
+      );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       callback(error);
     }
