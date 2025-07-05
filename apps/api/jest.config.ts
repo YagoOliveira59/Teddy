@@ -5,19 +5,27 @@ const config: Config = {
   testEnvironment: 'node',
   rootDir: './',
   moduleFileExtensions: ['ts', 'js', 'json'],
-  transform: {
-    '^.+\\.ts$': ['ts-jest', {
-      isolatedModules: false,
-      tsconfig: './apps/api/tsconfig.json',
-    }],
+  globals: {
+    'ts-jest': {
+      tsconfig: './tsconfig.json', // ❗️E não 'tsconfig.build.json'
+    },
   },
-moduleNameMapper: {
-  '^@/src/(.*)$': '<rootDir>/src/$1',
-  '^@shared/(.*)$': '<rootDir>/src/shared/$1',
-  '^@modules/(.*)$': '<rootDir>/src/modules/$1',
-  '^@/(.*)$': '<rootDir>/src/$1',
-  '^src/(.*)$': '<rootDir>/src/$1', // ← adiciona suporte se você usar `src/...`
-},
+  transform: {
+    '^.+\\.ts$': [
+      'ts-jest',
+      {
+        isolatedModules: false,
+        tsconfig: './apps/api/tsconfig.json',
+      },
+    ],
+  },
+  moduleNameMapper: {
+    '^@/src/(.*)$': '<rootDir>/src/$1',
+    '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+    '^@modules/(.*)$': '<rootDir>/src/modules/$1',
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^src/(.*)$': '<rootDir>/src/$1', // ← adiciona suporte se você usar `src/...`
+  },
   testMatch: ['**/*.spec.ts'],
 };
 

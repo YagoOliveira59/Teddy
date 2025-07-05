@@ -67,6 +67,9 @@ export function AuthPage({ loginUseCase, registerUseCase }: AuthPageProps) {
       console.error("Falha no login:", err);
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        setError(null);
+      }, 5000); // Limpa o erro após 5 segundos
     }
   };
 

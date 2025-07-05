@@ -31,6 +31,6 @@
       "@teddy/types": ["packages/types/src"]
     }, */
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "**/*.spec.ts"],
   "exclude": ["node_modules", "dist", "test"]
 }

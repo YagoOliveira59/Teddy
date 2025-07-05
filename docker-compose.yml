@@ -51,8 +51,6 @@ services:
       - minha-rede
     restart: unless-stopped
 
-  # --- SERVIÇOS ADICIONADOS ---
-
   # Serviço do Redis
   redis:
     container_name: teddy-redis
@@ -68,7 +66,7 @@ services:
   # Serviço do Prometheus (Coleta de Métricas)
   prometheus:
     container_name: teddy-prometheus
-    image: prom/prometheus:v2.53.0 # Versão estável recente
+    image: prom/prometheus:latest
     ports:
       - "9090:9090"
     volumes:
@@ -85,7 +83,7 @@ services:
   # Serviço do Grafana (Visualização de Métricas e Logs)
   grafana:
     container_name: teddy-grafana
-    image: grafana/grafana:11.0.0 # Versão estável recente
+    image: grafana/grafana-oss:latest
     ports:
       - "3000:3000"
     volumes:
@@ -102,13 +100,15 @@ services:
   # Serviço do Jaeger (Tracing Distribuído)
   jaeger:
     container_name: teddy-jaeger
-    image: jaegertracing/all-in-one:1.57 # Versão estável recente
+    image: jaegertracing/all-in-one:latest
     ports:
-      - "6831:6831/udp" # Agent
-      - "16686:16686"    # UI
-      - "14268:14268"    # Collector (http)
+      - "6831:6831/udp"
+      - "16686:16686"
+      - "14268:14268"
+      - "4317:4317"
+      - "4318:4318"
     environment:
-      - COLLECTOR_OTLP_ENABLED=true # Habilita o protocolo OpenTelemetry
+      - COLLECTOR_OTLP_ENABLED=true
     networks:
       - minha-rede
     restart: unless-stopped
@@ -121,5 +121,5 @@ networks:
 
 volumes:
   postgres-data:
-  redis-data: # Volume para persistir dados do Redis
-  grafana-data: # Volume para persistir dashboards e configurações do Grafana
+  redis-data:
+  grafana-data:

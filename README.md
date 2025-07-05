@@ -61,6 +61,31 @@ npx jest --config apps/api/jest.config.ts
 ```
 
 
+### Observabilidade
+
+Grafana
+
+user: Admin
+pass: admin
+
+```
+http://localhost:3000/
+```
+
+
+Jaeger
+
+```
+http://localhost:16686/
+```
+
+
+Prometheus
+
+```
+http://localhost:4000/metrics
+```
+
 ## Estimativa para o Desenvolvimento do Painel Administrativo
 
 Para o desenvolvimento do painel administrativo, que inclui **gestão de clientes (CRUD - Criar, Ler, Atualizar, Excluir)**, uma tela de **visualização de clientes selecionados**, e a tela inicial para inserção do nome do usuário, apresento as seguintes estimativas:

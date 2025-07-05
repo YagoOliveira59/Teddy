@@ -40,7 +40,7 @@ function ClientCard({
 
   return (
     <motion.div
-      className="w-[285px] h-[138] bg-white rounded-sm shadow-md p-4 flex flex-col justify-between text-sm text-gray-700 hover:shadow-xl transition-shadow duration-200"
+      className="w-[285px] h-[138px] bg-white rounded-sm shadow-md p-4 flex flex-col justify-between text-sm text-gray-700 hover:shadow-xl transition-shadow duration-200"
       whileHover={{ scale: 1.05 }}
     >
       <div>
@@ -48,7 +48,7 @@ function ClientCard({
         <p>Salário: {formatCurrency(client.salary)}</p>
         <p>Empresa: {formatCurrency(client.companyValue)}</p>
       </div>
-      <div className="flex justify-between items-center gap-4 mt-4 border-t pt-3">
+      <div className="flex justify-between items-center gap-4 mt-2 border-t pt-2">
         {variant === "default" && (
           <>
             <button

@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
 import configuration from '@/src/config/configuration';
+import bullmqConfig from './config/bullmq.config';
 
 import { AuthModule } from '@/src/modules/auth/auth.module';
 import { DatabaseModule } from '@/src/database/database.module';
@@ -21,13 +23,17 @@ import { RabbitMQModule } from '@shared/message-queue/rabbitmq.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [configuration],
+      load: [configuration, bullmqConfig],
     }),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
+    BullModule.forRootAsync({
+      useFactory: (configService: ConfigService) => {
+        const redis = configService.get<Record<string, any>>('bull.redis');
+        if (!redis) {
+          throw new Error('BullMQ Redis configuration is missing');
+        }
+        return { connection: redis };
       },
+      inject: [ConfigService],
     }),
     PrometheusModule.register({
       path: '/metrics',
