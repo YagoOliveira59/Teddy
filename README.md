@@ -27,7 +27,7 @@ Para rodar o frontend
 ```
 yarn run dev:web
 ```
-O app pode ser acessada em [http://localhost:4000/api#/](http://localhost:5173/)
+O app pode ser acessada em [http://localhost:5173/](http://localhost:5173/)
 
 
 
@@ -36,7 +36,7 @@ Para rodar o backend
 yarn run dev:api
 ```
 
-A api pode ser acessada em http://localhost:4000/api#/
+A api pode ser acessada em [http://localhost:4000/api#/](http://localhost:4000/api#/)
 
 ### Docker
 
