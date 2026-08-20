@@ -5,6 +5,9 @@
   "description": "",
   "private": true,
   "type": "commonjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "main": "index.js",
   "workspaces": {
     "packages": [

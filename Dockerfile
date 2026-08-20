@@ -1,7 +1,7 @@
 # Dockerfile para o monorepo Teddy (localizado na raiz do projeto)
 
 # --- Estágio de Build Principal (para todas as aplicações Node.js no monorepo) ---
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -35,7 +35,7 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
 # --- Estágio Final para a API (Node.js) ---
-FROM node:22-alpine AS production-api
+FROM node:24-alpine AS production-api
 
 WORKDIR /usr/src/app
 
